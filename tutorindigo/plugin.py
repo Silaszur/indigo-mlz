@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import os
-from glob import glob
 import typing as t
+from glob import glob
 
 import importlib_resources
 from tutor import hooks
-from tutormfe.hooks import PLUGIN_SLOTS
 from tutor.__about__ import __version_suffix__
+from tutormfe.hooks import PLUGIN_SLOTS
 
 from .__about__ import __version__
 
@@ -48,16 +48,16 @@ hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
 # This is where the theme is rendered in the openedx build directory
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     [
-        ("indigo-mlz", "build/openedx/themes"),
-        ("indigo-mlz/env.config.jsx", "plugins/mfe/build/mfe"),
+        ("indigo", "build/openedx/themes"),
+        ("indigo/env.config.jsx", "plugins/mfe/build/mfe"),
     ],
 )
 
 # Force the rendering of scss files, even though they are included in a "partials" directory
 hooks.Filters.ENV_PATTERNS_INCLUDE.add_items(
     [
-        r"indigo-mlz/lms/static/sass/partials/lms/theme/",
-        r"indigo-mlz/cms/static/sass/partials/cms/theme/",
+        r"indigo/lms/static/sass/partials/lms/theme/",
+        r"indigo/cms/static/sass/partials/cms/theme/",
     ]
 )
 
@@ -66,7 +66,7 @@ hooks.Filters.ENV_PATTERNS_INCLUDE.add_items(
 with open(
     os.path.join(
         str(importlib_resources.files("tutorindigo") / "templates"),
-        "indigo-mlz",
+        "indigo",
         "tasks",
         "init.sh",
     ),
@@ -78,7 +78,7 @@ with open(
 # Override openedx & mfe docker image names
 @hooks.Filters.CONFIG_DEFAULTS.add(priority=hooks.priorities.LOW)
 def _override_openedx_docker_image(
-    items: list[tuple[str, t.Any]]
+    items: list[tuple[str, t.Any]],
 ) -> list[tuple[str, t.Any]]:
     openedx_image = ""
     mfe_image = ""
@@ -113,21 +113,27 @@ indigo_styled_mfes = [
     "discussions",
 ]
 
-hooks.Filters.ENV_PATCHES.add_items(
-    [
-        (
-            f"mfe-dockerfile-post-npm-install-{mfe}",
-            """
-           
+
+for mfe in indigo_styled_mfes:
+    hooks.Filters.ENV_PATCHES.add_items(
+        [
+            (
+                f"mfe-dockerfile-post-npm-install-{mfe}",
+                """
 RUN npm install @edly-io/indigo-frontend-component-footer@^2.0.0
 RUN npm install '@edx/frontend-component-header@npm:@edly-io/indigo-frontend-component-header@^3.2.2'
 RUN npm install '@edx/brand@npm:@edly-io/indigo-brand-openedx@^2.2.2'
 
 """,
-        )
-        for mfe in indigo_styled_mfes
-    ]
-)
+            ),
+            (
+                f"mfe-env-config-runtime-definitions-{mfe}",
+                """
+const { default: IndigoFooter } = await import('@edly-io/indigo-frontend-component-footer');
+""",
+            ),
+        ]
+    )
 
 
 hooks.Filters.ENV_PATCHES.add_item(
@@ -146,7 +152,7 @@ hooks.Filters.ENV_PATCHES.add_items(
             "openedx-common-assets-settings",
             """
 javascript_files = ['base_application', 'application', 'certificates_wv']
-dark_theme_filepath = ['indigo-mlz/js/dark-theme.js']
+dark_theme_filepath = ['indigo/js/dark-theme.js']
 
 for filename in javascript_files:
     if filename in PIPELINE['JAVASCRIPT']:
@@ -158,7 +164,7 @@ for filename in javascript_files:
             "openedx-lms-development-settings",
             """
 javascript_files = ['base_application', 'application', 'certificates_wv']
-dark_theme_filepath = ['indigo-mlz/js/dark-theme.js']
+dark_theme_filepath = ['indigo/js/dark-theme.js']
 
 for filename in javascript_files:
     if filename in PIPELINE['JAVASCRIPT']:
