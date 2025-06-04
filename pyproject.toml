@@ -1,8 +1,8 @@
 #https://hatch.pypa.io/latest/config/build/
 
 [project]
-name = "tutor-indigo"
-description = "Indigo theme plugin for Tutor"
+name = "indigo-mlz"
+description = "Indigo-MLZ theme plugin for Tutor"
 readme = { file = "README.rst", content-type = "text/x-rst" }
 license = { text = "AGPLv3" }
 requires-python = ">=3.9"
@@ -35,7 +35,7 @@ dev = [
 ]
 
 [project.entry-points."tutor.plugin.v1"]
-indigo = "tutorindigo.plugin"
+indigo-mlz = "tutorindigo.plugin"
 
 [project.urls]
 Code = "https://github.com/overhangio/tutor-indigo"
