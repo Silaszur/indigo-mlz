@@ -48,16 +48,16 @@ hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
 # This is where the theme is rendered in the openedx build directory
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     [
-        ("indigo-mlz", "build/openedx/themes"),
-        ("indigo-mlz/env.config.jsx", "plugins/mfe/build/mfe"),
+        ("indigo", "build/openedx/themes"),
+        ("indigo/env.config.jsx", "plugins/mfe/build/mfe"),
     ],
 )
 
 # Force the rendering of scss files, even though they are included in a "partials" directory
 hooks.Filters.ENV_PATTERNS_INCLUDE.add_items(
     [
-        r"indigo-mlz/lms/static/sass/partials/lms/theme/",
-        r"indigo-mlz/cms/static/sass/partials/cms/theme/",
+        r"indigo/lms/static/sass/partials/lms/theme/",
+        r"indigo/cms/static/sass/partials/cms/theme/",
     ]
 )
 
@@ -66,7 +66,7 @@ hooks.Filters.ENV_PATTERNS_INCLUDE.add_items(
 with open(
     os.path.join(
         str(importlib_resources.files("tutorindigo") / "templates"),
-        "indigo-mlz",
+        "indigo",
         "tasks",
         "init.sh",
     ),
