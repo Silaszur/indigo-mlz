@@ -119,15 +119,10 @@ header.global-header {
         }
     }
     .hamburger-menu {
-        height: 17px;
+        height: 12px;
         width: 20px;
         left: 15px;
         top: 18px;
-        background: none;
-        border: 0;
-        padding: 0;
-        box-shadow: none;
-
         .line {
             height: 2px;
             &:nth-child(2), &:nth-child(3) {
@@ -215,13 +210,6 @@ header.global-header {
                 opacity: 0;
                 width: 0;
                 height: 0;
-
-              &:focus {
-                ~ .slider {
-                  outline: 2px solid $primary;
-                  outline-offset: 1px;
-                }
-              }
             }
 
             /* The slider */
@@ -338,13 +326,6 @@ body.indigo-dark-theme {
         }
         #toggle-switch {
             .switch {
-                input {
-                  &:focus {
-                    ~ .slider {
-                      outline-color: $primary-d;
-                    }
-                  }
-                }
                 /* The slider */
                 .slider {
                     background-color: #ccc;

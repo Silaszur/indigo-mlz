@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import os
-import typing as t
 from glob import glob
+import typing as t
 
 import importlib_resources
 from tutor import hooks
-from tutor.__about__ import __version_suffix__
 from tutormfe.hooks import PLUGIN_SLOTS
+from tutor.__about__ import __version_suffix__
 
 from .__about__ import __version__
 
@@ -66,7 +66,7 @@ hooks.Filters.ENV_PATTERNS_INCLUDE.add_items(
 with open(
     os.path.join(
         str(importlib_resources.files("tutorindigo") / "templates"),
-        "indigo-mlz",
+        "indigo",
         "tasks",
         "init.sh",
     ),
@@ -78,7 +78,7 @@ with open(
 # Override openedx & mfe docker image names
 @hooks.Filters.CONFIG_DEFAULTS.add(priority=hooks.priorities.LOW)
 def _override_openedx_docker_image(
-    items: list[tuple[str, t.Any]],
+    items: list[tuple[str, t.Any]]
 ) -> list[tuple[str, t.Any]]:
     openedx_image = ""
     mfe_image = ""
@@ -113,27 +113,21 @@ indigo_styled_mfes = [
     "discussions",
 ]
 
-
-for mfe in indigo_styled_mfes:
-    hooks.Filters.ENV_PATCHES.add_items(
-        [
-            (
-                f"mfe-dockerfile-post-npm-install-{mfe}",
-                """
+hooks.Filters.ENV_PATCHES.add_items(
+    [
+        (
+            f"mfe-dockerfile-post-npm-install-{mfe}",
+            """
+           
 RUN npm install @edly-io/indigo-frontend-component-footer@^2.0.0
 RUN npm install '@edx/frontend-component-header@npm:@edly-io/indigo-frontend-component-header@^3.2.2'
 RUN npm install '@edx/brand@npm:@edly-io/indigo-brand-openedx@^2.2.2'
 
 """,
-            ),
-            (
-                f"mfe-env-config-runtime-definitions-{mfe}",
-                """
-const { default: IndigoFooter } = await import('@edly-io/indigo-frontend-component-footer');
-""",
-            ),
-        ]
-    )
+        )
+        for mfe in indigo_styled_mfes
+    ]
+)
 
 
 hooks.Filters.ENV_PATCHES.add_item(
